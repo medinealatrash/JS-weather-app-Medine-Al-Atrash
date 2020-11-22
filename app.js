@@ -107,8 +107,139 @@ inputForm.addEventListener('submit', function(e){
     })
 //if successful, we will have a ready-made JSON object
     .then(function(data){
+        card.style.display = 'block';
+        loadingImg.style.display = 'none';
+
+
+        console.log ('start ',data);
+
+
+//if the city name is entered incorrectly, an error message will appear, which will disappear after 1500ms. The block displaying weather information will be removed
+        if(!data.name){ 
+            messageError.style.display = 'block';
+            card.remove(); 
+
+             setTimeout(() => {
+             messageError.style.display = 'none';
+            
+             },1500); 
+        } 
+
+
+//display the name of the city
+        h3City.innerText = data.name;
+
+ //display the temperature in the specified city      
+        liTemp.innerText = `temperature: ≈ ${Math.round(data.main.temp)} ℃`;
         
-         })
+ //the background of the block displaying full information about the weather in a particular city will change color depending on the temperature       
+        if ((Math.round(data.main.temp)) < 2){
+            card.style.backgroundColor = 'rgba(65, 46, 133, 0.788)'
+        }
+        if ((Math.round(data.main.temp)) >= 2 && (Math.round(data.main.temp)) < 5 ){
+            card.style.backgroundColor = 'rgba(43, 8, 167, 0.747)'
+        }
+        if ((Math.round(data.main.temp)) >= 5 && (Math.round(data.main.temp)) < 10){
+            card.style.backgroundColor = 'rgba(31, 122, 196, 0.747)'
+        }
+        if ((Math.round(data.main.temp)) >= 10 && (Math.round(data.main.temp)) < 15){
+            card.style.backgroundColor = 'rgba(31, 196, 119, 0.747)'
+        }
+        if ((Math.round(data.main.temp)) >= 15 && (Math.round(data.main.temp)) < 25)
+            {card.style.backgroundColor = '#f3fd5dbe'
+        }
+        if ((Math.round(data.main.temp)) >= 25 && (Math.round(data.main.temp)) < 32){
+            card.style.backgroundColor = '#f8b147be'
+        }
+        if ((Math.round(data.main.temp)) >= 32 && (Math.round(data.main.temp)) < 38){
+            card.style.backgroundColor = '#f84747be'
+        }
+     
+        
+     //display information about humidity, description and pressure   
+        liHumidity.innerText = `humidity: ${data.main.humidity}`;
+        liDecription.innerText = `description: ${data.weather[0].description}`;
+        liPressure.innerText = `pressure: ${data.main.pressure}`; 
+        liWindSpeed.innerText = `wind speed: ${data.wind.speed}`;
+        
+        ul.appendChild(liTemp);
+        ul.appendChild(liHumidity);
+        ul.appendChild(liDecription);
+        ul.appendChild(liPressure);
+        ul.appendChild(liWindSpeed);
+
+//if the name of the city matches the one in the database, a message appears on the screen, which will disappear after 1500ms
+        messageAccepted.style.display = 'block';
+        setTimeout(() => {
+            messageAccepted.style.display = 'none'; 
+        },1500);
+
+//add an attribute to the element that displays icons and specify the URL       
+        let iconV = data.weather[0].icon;
+        let urlIcon= `http://openweathermap.org/img/wn/${iconV}@2x.png`;
+        weatherIcon.src = urlIcon;
+//auxiliary variables, arrays.
+       let a, b, c , d;
+       let x = [];
+       let y = [];
+      
+
+        for (let i=0; i<allCard.length; i++){
+            console.log(allCard);
+            if (allCard.length === 2){ //check if we entered 2 cities
+                input.disabled = true; //correct input of more than 2 cities makes the input field inactive
+                
+ //if you entered 2 cities, then we look for information about the temperature in the found cities and calculate the temperature difference               
+                let liAll = document.querySelectorAll('ul .temperature');
+
+                for (let j=0; j<liAll.length;j++){
+                
+                        a = liAll[0].innerText;
+                        b = liAll[1].innerText;
+
+                    x = a.split(' ');
+                    y = b.split(' ');
+               
+                    for (let k = 0; k < x.length; k++){
+                        x[k] = parseInt(x[k]);
+                        y[k] = parseInt(y[k]);
+                    }
+     //looking for temperature value    
+                    for(let item of x){
+                        if (Number(item)){
+                            console.log((item))
+                            c = item;
+                        }
+                    }
+                    for(let item1 of y){
+                        if (Number(item1)){
+                            console.log((item1))
+                            d = item1;
+                        }
+                    }
+
+                    
+                }
+    tempDiff = Math.abs(d - c);
+//the bottom of the container becomes visible,
+    containerBottom.style.display = 'block';
+//a message appears on the screen that displays the temperature difference between cities
+    difference.innerText = `Temperature difference between cities is ${tempDiff} ℃`;
+               
+//change the text and design of the button
+               btn.innerText =`ReFresh`;
+               btn.style.color = 'white';
+               btn.style.background = 'green';
+//the button will reload the page when clicked
+               btn.addEventListener('click',function(e){
+                   location.reload();
+               })
+              
+            } 
+           
+        } 
+ 
+})
 //reject promise and catch the error 
 .catch(function(error){
       
