@@ -13,7 +13,7 @@ let input = document.querySelector('.my-input');
 let btn = document.querySelector('.my-btn');
 
 //API key here
-//const apiKey = `b5ba791bba7c54df7c0894859744af9e`; 
+const apiKey = `b5ba791bba7c54df7c0894859744af9e`; 
 
 
 
@@ -210,12 +210,18 @@ inputForm.addEventListener('submit', function(e){
                             console.log((item))
                             c = item;
                         }
+                        if ((item) === 0 ){
+                            c = item;
+                        } 
                     }
                     for(let item1 of y){
                         if (Number(item1)){
                             console.log((item1))
                             d = item1;
                         }
+                        if ((item1) === 0 ){
+                            d = item1;
+                        } 
                     }
 
                     
